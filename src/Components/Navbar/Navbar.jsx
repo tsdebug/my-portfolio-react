@@ -11,10 +11,10 @@ const Navbar = () => {
             <button className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105">Copy</button>
             <a
   className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105"
-  href="/documents/RESUME(Tanushree Shaw).pdf"
+  href="/docs/RESUME(Tanushree Shaw).pdf"
   target="_blank"
 >
-  <button class="cv-btn">Resume</button>
+  <button className="cv-btn">Resume</button>
 </a>
         </div>
 
