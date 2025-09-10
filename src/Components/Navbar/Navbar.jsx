@@ -6,7 +6,17 @@ const Navbar = () => {
   const [showMenu, setShowmenu] = useState(true);
   return (
     <nav className="flex flex-wrap justify-between md:items-center text-white px-10 pt-6 md:px-20">
-      <span className="text-xl font-bold tracking-wide">Portfolio</span>
+      <div className='mt-5 md:md-10 text-white text-sm md:text-lg md:py-2 md:px-3 duration-300 font-semibold bg-[#465697] flex items-center gap-x-2.5 py-[10px] px-[15px] rounded-[30px] shadow-md'>
+            <span>tanushreeshaw01@gmail.com</span>
+            <button className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105">Copy</button>
+            <a
+  className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105"
+  href="/documents/RESUME(Tanushree Shaw).pdf"
+  target="_blank"
+>
+  <button class="cv-btn">Resume</button>
+</a>
+        </div>
 
       <ul className={`${
               menu ? "block" :"hidden"
@@ -20,6 +30,9 @@ const Navbar = () => {
               </a>
               <a href='#Projects'>
                 <li className='text-md transition-all duration-300 p-1 md:p-0'>Projects</li>
+              </a>
+              <a href='#Blog'>
+                <li className='text-md transition-all duration-300 p-1 md:p-0'>Blog</li>
               </a>
               <a href='#Contacts'>
                 <li className='text-md transition-all duration-300 p-1 md:p-0'>Contact</li>
