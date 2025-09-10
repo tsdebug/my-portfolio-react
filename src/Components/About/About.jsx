@@ -18,14 +18,10 @@ const About = () => {
 
               <span className="w-96">
                 <h1 className="text-xl md:text-2xl font-semibold leading-normal">
-                  Frontend developer
+                  Full Stack Developer
                 </h1>
-                <p className="text-sm md:text-md leading-tight">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Maiores explicabo deserunt asperiores quasi, vitae blanditiis
-                  perferendis quos consectetur ea harum! Libero aut qui
-                  similique recusandae provident consectetur sed itaque alias
-                  sint ipsa?
+                <p className="text-sm md:text-md leading-tight text-justify">
+                  I'm a driven Full Stack Developer, proficient in both front-end and back-end technologies. I build robust, scalable web applications and craft seamless user experiences, always focusing on performance and modern best practices.
                 </p>
               </span>
             </div>
@@ -34,11 +30,10 @@ const About = () => {
 
               <span className="w-96">
                 <h1 className="text-xl md:text-2xl font-semibold leading-normal">
-                  Database developer
+                  SEO Specialist
                 </h1>
-                <p className="text-sm md:text-md leading-tight">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Maiores
+                <p className="text-sm md:text-md leading-tight text-justify">
+                  As an SEO Specialist, I'm passionate about driving organic growth. I specialize in improving search engine visibility, increasing targeted traffic, and maximizing ROI through strategic keyword research, technical SEO, and content optimization.
                 </p>
               </span>
             </div>
@@ -47,12 +42,10 @@ const About = () => {
 
               <span className="w-96">
                 <h1 className="text-xl md:text-2xl font-semibold leading-normal">
-                  Backend developer
+                  Wordpress Expert
                 </h1>
-                <p className="text-sm md:text-md leading-tight">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Maiores explicabo deserunt asperiores quasi, vitae blanditiis
-                  perferendis
+                <p className="text-sm md:text-md leading-tight text-justify">
+                  I'm an experienced WordPress Expert, adept at developing custom themes and plugins. I create secure, high-performing, and visually appealing WordPress websites that empower clients to achieve their online objectives.
                 </p>
               </span>
             </div>
