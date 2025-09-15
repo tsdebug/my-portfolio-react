@@ -1,4 +1,4 @@
-
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { RiCloseLine, RiMenu2Line } from "@remixicon/react";
 const Navbar = () => {
@@ -22,44 +22,42 @@ const Navbar = () => {
   return (
     <nav className="flex flex-wrap justify-between md:items-center text-white px-10 pt-6 md:px-20">
       <div className='mt-5 md:md-10 text-white text-sm md:text-lg md:py-2 md:px-3 duration-300 font-semibold bg-[#465697] flex items-center gap-x-2.5 py-[10px] px-[15px] rounded-[30px] shadow-md'>
-            <span>tanushreeshaw01@gmail.com</span>
-            <button
+        <span>tanushreeshaw01@gmail.com</span>
+        <button
           onClick={copyToClipboard}
           className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105"
         >
           Copy
         </button>
-            <a
-  className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105"
-  href="/docs/RESUME(Tanushree Shaw).pdf"
-  target="_blank"
->
-  <button className="cv-btn">Resume</button>
-</a>
-        </div>
-
-      <ul className={`${
-              menu ? "block" :"hidden"
-              } 
-              mx-24 p-y2 mt-4 font-semibold md:mt-5 bg-black px-2 rounded-xl bg-opacity-30 md:border-none text-center md:bg-transparent md:static md:mx-0 md:flex gap-6`}>
-              <a href='#About'>
-                <li className='text-md transition-all duration-300 p-1 md:p-0'>About</li>
-              </a>
-              <a href='#Experience'>
-                <li className='text-md transition-all duration-300 p-1 md:p-0'>Experience</li>
-              </a>
-              <a href='#Projects'>
-                <li className='text-md transition-all duration-300 p-1 md:p-0'>Projects</li>
-              </a>
-              <a href="https://github.com/tsdebug/blogs"
+        <a
+          className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105"
+          href="/docs/RESUME(Tanushree Shaw).pdf"
           target="_blank"
-          rel="noopener noreferrer">
-                <li className='text-md transition-all duration-300 p-1 md:p-0'>Blog</li>
-              </a>
-              <a href='#Contacts'>
-                <li className='text-md transition-all duration-300 p-1 md:p-0'>Contact</li>
-              </a>
-            </ul>
+        >
+          <button className="cv-btn">Resume</button>
+        </a>
+      </div>
+
+      <ul className={`${menu ? "block" : "hidden"
+        } 
+              mx-24 p-y2 mt-4 font-semibold md:mt-5 bg-black px-2 rounded-xl bg-opacity-30 md:border-none text-center md:bg-transparent md:static md:mx-0 md:flex gap-6`}>
+        <a href='#About'>
+          <li className='text-md transition-all duration-300 p-1 md:p-0'>About</li>
+        </a>
+        <a href='#Experience'>
+          <li className='text-md transition-all duration-300 p-1 md:p-0'>Experience</li>
+        </a>
+        <a href='#Projects'>
+          <li className='text-md transition-all duration-300 p-1 md:p-0'>Projects</li>
+        </a>
+        <a><Link to="/blog">
+          <li className='text-md transition-all duration-300 p-1 md:p-0'>Blog</li>
+          </Link>
+        </a>
+        <a href='#Contacts'>
+          <li className='text-md transition-all duration-300 p-1 md:p-0'>Contact</li>
+        </a>
+      </ul>
       {showMenu ? (
         <RiMenu2Line
           size={30}
