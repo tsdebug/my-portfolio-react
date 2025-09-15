@@ -7,7 +7,6 @@ import typography from '@tailwindcss/typography';
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react(),
-    typography()
+    react()
   ],
 });

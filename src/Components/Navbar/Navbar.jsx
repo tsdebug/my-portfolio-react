@@ -51,7 +51,9 @@ const Navbar = () => {
               <a href='#Projects'>
                 <li className='text-md transition-all duration-300 p-1 md:p-0'>Projects</li>
               </a>
-              <a href='#Blog'>
+              <a href="https://github.com/tsdebug/blogs"
+          target="_blank"
+          rel="noopener noreferrer">
                 <li className='text-md transition-all duration-300 p-1 md:p-0'>Blog</li>
               </a>
               <a href='#Contacts'>
