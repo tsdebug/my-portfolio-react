@@ -4,11 +4,31 @@ import { RiCloseLine, RiMenu2Line } from "@remixicon/react";
 const Navbar = () => {
   const [menu, openMenu] = useState(false);
   const [showMenu, setShowmenu] = useState(true);
+
+  // Email to copy
+  const email = "tanushreeshaw01@gmail.com";
+
+  // Copy to clipboard function
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(email)
+      .then(() => {
+        alert("Email copied to clipboard!");
+      })
+      .catch((error) => {
+        console.error("Copy failed", error);
+      });
+  };
+
   return (
     <nav className="flex flex-wrap justify-between md:items-center text-white px-10 pt-6 md:px-20">
       <div className='mt-5 md:md-10 text-white text-sm md:text-lg md:py-2 md:px-3 duration-300 font-semibold bg-[#465697] flex items-center gap-x-2.5 py-[10px] px-[15px] rounded-[30px] shadow-md'>
             <span>tanushreeshaw01@gmail.com</span>
-            <button className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105">Copy</button>
+            <button
+          onClick={copyToClipboard}
+          className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105"
+        >
+          Copy
+        </button>
             <a
   className="border-none bg-white text-black cursor-pointer text-sm py-2 px-[15px] rounded-[20px] hover:opacity-85 hover:scale-105"
   href="/docs/RESUME(Tanushree Shaw).pdf"
