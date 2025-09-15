@@ -17,7 +17,7 @@ const Footer = () => {
       {/* Icon / Avatar */}
       <div className="mb-4">
         <img
-          src="..\docs\Contact me.webp"
+          src="..\docs\ContactMe.webp"
           alt="avatar"
           className="w-16 h-16 md:w-20 md:h-20"
         />
