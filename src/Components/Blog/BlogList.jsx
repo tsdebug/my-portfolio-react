@@ -1,115 +1,91 @@
-import React, { useState, useEffect } from 'react';
+// src/Components/Blog/BlogList.jsx
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import matter from 'gray-matter'; 
+import { docs } from '../../../source.generated';
 
-const BlogList = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const fmt = (iso) =>
+  iso ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(iso)) : '';
+
+export default function BlogList() {
+  // 1) Try to use precompiled metadata from Fumadocs
+  const staticItems = useMemo(() => {
+    if (!docs?.meta) return [];
+    const items = Object.entries(docs.meta).map(([path, meta]) => {
+      const slug = path.split('/').pop();
+      return {
+        path,
+        slug,
+        title: meta.title ?? 'Untitled',
+        description: meta.description ?? '',
+        date: meta.date ?? '',
+        author: meta.author ?? '',
+      };
+    });
+    items.sort((a, b) => new Date(b.date) - new Date(a.date));
+    return items;
+  }, []);
+
+  // 2) Fallback: dynamically import each MDX to extract frontmatter
+  const [dynamicItems, setDynamicItems] = useState(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        // --- How to get slugs ---
-        // For a small number of posts, you can manually list them:
-        const postSlugs = ['setup-jekyell-blog', 'internship-journey', 'full-stack-development', 'document-object-model']; // Make sure these match .md filenames
+    if (staticItems.length > 0) return; // already have meta
+    const entries = Object.entries(docs.doc || {});
+    if (entries.length === 0) {
+      setDynamicItems([]); // nothing to show
+      return;
+    }
 
-        // For a more dynamic approach in development with Vite:
-        // const markdownFiles = import.meta.glob('../../public/posts/*.md', { as: 'raw', eager: true });
-        // const fetchedPosts = await Promise.all(
-        //   Object.entries(markdownFiles).map(async ([path, markdownContent]) => {
-        //     const { data } = matter(markdownContent);
-        //     const slug = path.split('/').pop().replace('.md', ''); // Extract slug from filename
-        //     return { ...data, slug: slug };
-        //   })
-        // );
+    (async () => {
+      const all = await Promise.all(
+        entries.map(async ([path, importer]) => {
+          const mod = await importer(); // load MDX module
+          const fm = mod.frontmatter || {};
+          const slug = path.split('/').pop();
+          return {
+            path,
+            slug,
+            title: fm.title || slug,
+            description: fm.description || '',
+            date: fm.date || '',
+            author: fm.author || '',
+          };
+        })
+      );
+      all.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setDynamicItems(all);
+    })();
+  }, [staticItems.length]);
 
-        // For production, you'll want a build script to generate a JSON manifest
-        // or a more robust way to list slugs. For this example, we'll simulate
-        // fetching with manual slugs and then enhance with actual content fetching.
-
-        const fetchedPosts = await Promise.all(
-          postSlugs.map(async (slug) => {
-            const response = await fetch(`/posts/${slug}.md`);
-            if (!response.ok) {
-              console.warn(`Could not fetch post: /posts/${slug}.md`);
-              return null; // Skip if file not found
-            }
-            const markdown = await response.text();
-            const { data } = matter(markdown); // Extract front matter
-            return {
-              ...data,
-              slug: slug,
-              date: new Date(data.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              }),
-            };
-          })
-        );
-        // Filter out any null posts if a file wasn't found
-        setPosts(fetchedPosts.filter(Boolean).sort((a, b) => new Date(b.date) - new Date(a.date)));
-      } catch (err) {
-        console.error("Error fetching blog posts:", err);
-        setError("Failed to load blog posts.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []); // Empty dependency array means this runs once on mount
-
-  if (loading) return <div className="text-center py-10 text-xl text-gray-400">Loading blog posts...</div>;
-  if (error) return <div className="text-center py-10 text-xl text-red-500">{error}</div>;
-  if (posts.length === 0) return <div className="text-center py-10 text-xl text-gray-400">No blog posts found.</div>;
+  const items = staticItems.length > 0 ? staticItems : dynamicItems ?? [];
 
   return (
-    <section id="blog" className="py-16 md:py-24 bg-[#171d32]"> {/* Ensure consistent background */}
-      <div className="container mx-auto px-4">
-        <h1 className="text-5xl font-extrabold text-center text-white mb-12">My Blog</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {posts.map((post) => (
-            <div
-              key={post.slug}
-              className="bg-[#2a3044] rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out
-                         transform hover:-translate-y-2 flex flex-col overflow-hidden"
-            >
-              {post.image && (
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-48 object-cover rounded-t-xl"
-                  loading="lazy"
-                />
-              )}
-              <div className="p-6 flex flex-col flex-grow">
-                <h2 className="text-3xl font-bold text-white mb-3">
-                  <Link to={`/blog/${post.slug}`} className="hover:text-indigo-400 transition-colors duration-200">
-                    {post.title}
-                  </Link>
-                </h2>
-                <p className="text-gray-400 text-sm mb-4">
-                  Published on {post.date} by {post.author || 'Anonymous'}
-                </p>
-                <p className="text-gray-300 text-lg mb-6 flex-grow">
-                  {post.description}
-                </p>
-                <Link
-                  to={`/blog/${post.slug}`}
-                  className="inline-block self-start mt-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg
-                             hover:bg-indigo-700 transition-colors duration-200 shadow-md"
-                >
-                  Read More &rarr;
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+    <main className="max-w-4xl mx-auto px-6 py-10">
+      <h1 className="text-3xl md:text-4xl font-bold mb-6">Blog</h1>
 
-export default BlogList;
+      {dynamicItems === null && staticItems.length === 0 ? (
+        <p className="text-neutral-300">Loading posts…</p>
+      ) : items.length === 0 ? (
+        <p className="text-neutral-300">No posts yet.</p>
+      ) : (
+        <ul className="space-y-6">
+          {items.map((post) => (
+            <li key={post.path} className="rounded-xl bg-white/5 p-5 hover:bg-white/10 transition">
+              <Link to={`/blog/${post.slug}`} className="block">
+                <h2 className="text-xl md:text-2xl font-semibold hover:underline">
+                  {post.title}
+                </h2>
+              </Link>
+              <p className="text-sm text-neutral-400 mt-1">
+                {post.date ? fmt(post.date) : null}
+              </p>
+              {post.description && (
+                <p className="text-neutral-200 mt-2">{post.description}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
+  );
+}

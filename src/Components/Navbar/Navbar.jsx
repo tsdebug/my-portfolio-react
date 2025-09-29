@@ -50,10 +50,9 @@ const Navbar = () => {
         <a href='#Projects'>
           <li className='text-md transition-all duration-300 p-1 md:p-0'>Projects</li>
         </a>
-        <a><Link to="/blog">
-          <li className='text-md transition-all duration-300 p-1 md:p-0'>Blog</li>
-          </Link>
-        </a>
+        <li className="text-md transition-all duration-300 p-1 md:p-0">
+          <Link to="/blog">Blog</Link>
+        </li>
         <a href='#Contacts'>
           <li className='text-md transition-all duration-300 p-1 md:p-0'>Contact</li>
         </a>
