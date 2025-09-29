@@ -7,13 +7,6 @@ import { docs } from '../../../source.generated';
 const fmt = (iso) =>
   iso ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(iso)) : '';
 
-const toNiceTitle = (slugWithMaybeExt = '') => {
-  const noExt = slugWithMaybeExt.replace(/\.mdx?$/i, '');
-  const noDate = noExt.replace(/^\d{4}-\d{2}-\d{2}-/, ''); // remove leading 2025-02-06-
-  const spaced = noDate.replace(/-/g, ' ');
-  return spaced.replace(/\b\w/g, (c) => c.toUpperCase());
-};
-
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -26,7 +19,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.error) {
       return (
         <p className="text-red-400 mt-6">
-          Failed to render this post. See console for details (likely an image path).
+          Failed to render this post. Open the console for details.
         </p>
       );
     }
@@ -34,7 +27,6 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// Important: return JSX here, not a function component
 const renderer = toClientRenderer(docs.doc, ({ default: Mdx }) => (
   <div className="prose prose-invert max-w-none mt-8">
     <Mdx />
@@ -44,12 +36,13 @@ const renderer = toClientRenderer(docs.doc, ({ default: Mdx }) => (
 export default function BlogPost() {
   const { slug } = useParams();
 
-  // Find the compiled key for this file (we assume flat files in src/posts)
-  const docKey = useMemo(() => {
-    const keys = Object.keys(docs.doc || {});
-    return keys.find((k) => k.split('/').pop() === slug) ?? null;
-  }, [slug]);
-
+  // Match key by comparing filename without extension
+  const docKey = React.useMemo(() => {
+  const keys = Object.keys(docs.doc || {});
+  return keys.find(
+    (k) => (k.split('/').pop() || '').replace(/\.mdx?$/i, '') === slug
+  ) ?? null;
+}, [slug]);
   const [fm, setFm] = useState(null);
   const [status, setStatus] = useState('loading');
 
@@ -60,11 +53,9 @@ export default function BlogPost() {
     }
     setStatus('loading');
 
-    // Try precompiled meta first
     const meta = docs.meta?.[docKey];
     if (meta) setFm(meta);
 
-    // Also preload the module to ensure content chunk is ready and to fetch frontmatter if meta was missing
     docs.doc[docKey]()
       .then((mod) => {
         if (!meta) setFm(mod.frontmatter || {});
@@ -88,7 +79,6 @@ export default function BlogPost() {
   }
 
   const Content = renderer[docKey];
-  const displayTitle = fm?.title ?? toNiceTitle(slug);
 
   return (
     <article className="max-w-3xl mx-auto px-6 py-10">
@@ -96,7 +86,7 @@ export default function BlogPost() {
         <Link to="/blog" className="text-blue-400 hover:underline">← Back to blog</Link>
       </p>
 
-      <h1 className="text-3xl md:text-4xl font-bold">{displayTitle}</h1>
+      <h1 className="text-3xl md:text-4xl font-bold">{fm?.title ?? slug}</h1>
       <p className="text-sm text-neutral-400 mt-2">
         {fm?.date ? fmt(fm.date) : null}
         {fm?.author ? ` • ${fm.author}` : ''}
@@ -105,9 +95,7 @@ export default function BlogPost() {
       {status === 'loading' && <p className="text-neutral-300 mt-8">Loading…</p>}
       {status === 'error' && (
         <p className="text-red-400 mt-8">
-          Couldn’t load this post. Check image paths:
-          - public: /blog-assets/...
-          - src: relative to the MDX file (e.g., ../blog-assets/image.png)
+          Couldn’t load this post. Check image paths.
         </p>
       )}
 
