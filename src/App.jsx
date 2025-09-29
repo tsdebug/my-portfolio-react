@@ -13,6 +13,7 @@ import Footer from "./Components/Footer/Footer";
 // Assuming you create a new 'Blog' folder in src/Components/
 import BlogList from './Components/Blog/BlogList';
 import BlogPost from './Components/Blog/BlogPost';
+import ScrollToHash from './Components/ScrollToHash';
 
 // This component will render your main portfolio sections
 // It will only be shown when the path is '/'
@@ -31,7 +32,7 @@ function App() {
     <Router>
       <div className="bg-[#171d32] min-h-screen text-white"> {/* Apply global styles */}
         <Navbar /> {/* Navbar is always visible */}
-
+        <ScrollToHash />
         <Routes>
           <Route path="/" element={<MainPortfolioLayout />} />
           <Route path="/blog" element={<BlogList />} />

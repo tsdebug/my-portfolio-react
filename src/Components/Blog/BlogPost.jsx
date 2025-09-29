@@ -7,7 +7,27 @@ import { docs } from '../../../source.generated';
 const fmt = (iso) =>
   iso ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(iso)) : '';
 
-// Build renderer from compiled MDX registry
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <p className="text-red-400 mt-6">
+          Failed to render this post. Open the console for details (likely an image path issue).
+        </p>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// Build lazy components for each MDX module
 const renderer = toClientRenderer(docs.doc, ({ default: Mdx }) => {
   return function Rendered() {
     return (
@@ -21,31 +41,39 @@ const renderer = toClientRenderer(docs.doc, ({ default: Mdx }) => {
 export default function BlogPost() {
   const { slug } = useParams();
 
-  // Find the internal path that matches this slug (last segment)
-  const path = useMemo(() => {
-    for (const p of Object.keys(docs.doc || {})) {
-      if (p.split('/').pop() === slug) return p;
-    }
-    return null;
+  // Find the compiled key for this slug (we assume flat files in src/posts)
+  const docKey = useMemo(() => {
+    const keys = Object.keys(docs.doc || {});
+    return keys.find((k) => k.split('/').pop() === slug) ?? null;
   }, [slug]);
 
   const [frontmatter, setFrontmatter] = useState(null);
+  const [status, setStatus] = useState('loading');
 
   useEffect(() => {
-    if (!path) return;
-    const meta = docs.meta?.[path];
-    if (meta) {
-      setFrontmatter(meta);
+    if (!docKey) {
+      setStatus('notfound');
       return;
     }
-    // Fallback: load module to read frontmatter
-    (async () => {
-      const mod = await docs.doc[path]();
-      setFrontmatter(mod.frontmatter || {});
-    })();
-  }, [path]);
+    setStatus('loading');
 
-  if (!path) {
+    // Prefer meta (already compiled)
+    const meta = docs.meta?.[docKey];
+    if (meta) setFrontmatter(meta);
+
+    // Preload actual content module; if it errors (e.g., bad image path), we’ll see it
+    docs.doc[docKey]()
+      .then((mod) => {
+        if (!meta) setFrontmatter(mod.frontmatter || {});
+        setStatus('ready');
+      })
+      .catch((err) => {
+        console.error('MDX import failed:', err);
+        setStatus('error');
+      });
+  }, [docKey]);
+
+  if (status === 'notfound') {
     return (
       <main className="max-w-3xl mx-auto px-6 py-10">
         <p className="mb-6">
@@ -56,7 +84,7 @@ export default function BlogPost() {
     );
   }
 
-  const Content = renderer[path];
+  const Content = docKey ? renderer[docKey] : null;
 
   return (
     <article className="max-w-3xl mx-auto px-6 py-10">
@@ -64,15 +92,28 @@ export default function BlogPost() {
         <Link to="/blog" className="text-blue-400 hover:underline">← Back to blog</Link>
       </p>
 
-      <h1 className="text-3xl md:text-4xl font-bold">{frontmatter?.title ?? 'Untitled'}</h1>
+      <h1 className="text-3xl md:text-4xl font-bold">{frontmatter?.title ?? slug}</h1>
       <p className="text-sm text-neutral-400 mt-2">
         {frontmatter?.date ? fmt(frontmatter.date) : null}
         {frontmatter?.author ? ` • ${frontmatter.author}` : ''}
       </p>
 
-      <Suspense fallback={<p className="text-neutral-300 mt-8">Loading…</p>}>
-        <Content />
-      </Suspense>
+      {status === 'loading' && <p className="text-neutral-300 mt-8">Loading…</p>}
+      {status === 'error' && (
+        <p className="text-red-400 mt-8">
+          Couldn’t load this post. Check image paths:
+          - public assets: /blog-assets/...
+          - src assets: relative to the MDX file (e.g., ../blog-assets/image.png)
+        </p>
+      )}
+
+      {Content && status === 'ready' && (
+        <ErrorBoundary>
+          <Suspense fallback={<p className="text-neutral-300 mt-8">Loading…</p>}>
+            <Content />
+          </Suspense>
+        </ErrorBoundary>
+      )}
     </article>
   );
 }
