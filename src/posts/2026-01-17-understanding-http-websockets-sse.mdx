@@ -6,6 +6,7 @@ description: "This post is about the differnt internet protocols (HTTP, WebSocke
 author: "Tanushree Shaw"
 ---
 # Beyond Request/Response: Understanding HTTP, WebSockets, and SSE.
+
 ![Title Image](./blog-assets/title.png)
 
 In the world that we live in today, everyone wants everything instantly. When we write a message in a chat app we want it to be instantly delivered and to be seen by the other person immediately or when we are analyzing crypto graphs, we expect the price to tick up and down without having to refresh. Everyone is in a rush and we know just how much people love real-time updating facilities.
@@ -17,6 +18,7 @@ The web was not made for conversations so how did we manage to go from static pa
 ---
 
 ## HTTP: (“The letter system”)
+
 ![HTTP Image](./blog-assets/http.png)
 
 **HTTP** stands for Hypertext Transfer Protocol. It powers almost every other website on the internet. It is a stateless application-layer protocol (set of rules) used for transferring hypertext (web pages) over the internet.
@@ -32,6 +34,9 @@ If you want to ask another question you have to start all over again. Remember t
 **Uni-directional / Request-Response:** The client (browser) always initiates the conversation. The server can’t speak to the client unless the client speaks first. You make a request, the server responds.
 In the case of HTTP, the server treats every single request as a brand transaction (conversation) from a complete stranger, even if it is from the same person who made a request a second ago.
 
+<div style={{ maxWidth: '400px', margin: '0 auto' }}>
+![HTTP mermaid diagram](./blog-assets/http_md.png)
+</div>
 ---
 
 ### Now why on earth would we design it like that?
@@ -79,6 +84,10 @@ Server - “No…”
 A few seconds later you ask again - “Now?”
 Server checks and replies - “Yes, here is the message”. 
 
+<div style={{ maxWidth: '400px', margin: '0 auto' }}>
+![Short polling mermaid diagram](./blog-assets/stpolling.png)
+</div>
+
 You have to check up on the server for any new messages, it can’t simply give you the message when received because it follows request/response, you have to request then only the server can respond. This is called **‘Polling’** more specifically **‘Short-Polling’**. It’s like checking your physical mail box every few seconds in hopes of getting a new letter. It’s as exhausting as it sounds, it actually exhausts the server (CPU load) and also wastes a lot of data since you send heavy headers back and forth for no reason. 
 
 This situation can be helped by not having to send those heavy headers every two seconds, instead request once and the server checks, waits and when it receives the message it sends it to you so that you don’t have to nag the server every two seconds. This is called **‘Long-Polling’**. It’s something like this:
@@ -86,12 +95,17 @@ You - “Is there any new message?”
 Server - waits while keeping the connection open for 30 seconds..
 Server - “Now I have one, here is your message.” → Connection closes
 
+<div style={{ maxWidth: '400px', margin: '0 auto' }}>
+![Long polling mermaid diagram](./blog-assets/lgpolling.png)
+</div>
+
 It is better than short polling, but re-establishing connections constantly is still heavy.
 If a problem is acknowledged, you know someone did come up with a solution to that!
 
 ---
 
 ## WebSockets: (The "Phone Call”)
+
 ![WebSocket Image](./blog-assets/ws.png)
 
 Websockets are compared to **phone calls** for understanding because just like a phone call it allows two way connection between you (client) and the server. You don’t have to ask the server for it to respond, if it receives a message it can give it to you without you having to request it every time there is a message.
@@ -106,6 +120,10 @@ So basically websockets are:
 You might think, “If the web runs on HTTP, how does it change to websockets ? Where and how does this change happen?”
 The most interesting fact is that websockets don’t just appear magically, HTTP is upgraded to websockets. Both are protocols, so basically it’s a protocol switch, from HTTP → WebSockets. Taking a look back we know that the client sends headers to the server, right here we specify that we want to upgrade to “WebSockets”, then the server does its processing and if everything’s alright, it passes a 101 Status and the protocol switch happens immediately. This thing going on for the upgrade to happen is termed as “handshake”.
 It's like sending a letter that says: 'Stop writing back. Call me on this number immediately.' And if the server agrees you get a call!
+
+<div style={{ maxWidth: '400px', margin: '0 auto' }}>
+![WebSocket mermaid diagram](./blog-assets/websocket_md.png)
+</div>
 
 ### Advantages of WebSockets
 *   **Real-time Speed:** Since the connection is established for a complete session and not just one set of request/response, the data transfers instantly, unlike HTTP, there is no ’handshake’ delay for every single message.
@@ -146,9 +164,13 @@ Check it out yourself! Here’s how.
     *   **The Colours:** You will see a table with ‘Data’, ‘Length’ and ‘Time’. In the ‘Data’ column if **Green Upwards Arrow** - You sent the data to the server. If **Red Downwards Arrow** - Server sent data to you.
     *   **The Heartbeat:** The "Phone Line" will be cut by the internet providers if it is silent for too long. **Ping:** The Server asks, "Are you still there?" **Pong:** The Browser replies, "Yes, don't hang up." This is automatic.
 
+<div style={{ maxWidth: '400px', margin: '0 auto' }}>
+![Heartbeat](./blog-assets/heartbeat.png)
+</div>
 ---
 
 ## SSE (Server Sent Events): (The "Radio Station”)
+
 ![SSE Image](./blog-assets/sse.png)
 
 Okay so till here we have a ‘letter system’ (HTTP) that is too slow and a ‘phone call system’ (WebSockets) that is way fast for sure but heavy and complex. 
@@ -163,6 +185,10 @@ Fun fact? SSE is just HTTP with a twist, that is not too twisted to understand o
 *   **Request:** You sent a normal HTTP GET request (as usual).
 *   **Response:** Server goes, “Here is your file..” BUT for case of SSE, it sets the content-type to text/event-stream.
 *   **Trick behind:** The server never sends the ‘End of file’ signal and it’s like keeping the letter open. It keeps the letter open and writes a new line in the bottom forever → a never ending letter kind of.
+
+<div style={{ maxWidth: '400px', margin: '0 auto' }}>
+![SSE mermmaid diagram](./blog-assets/sse_md.png)
+</div>
 
 ### Advantages of SSE
 *   **Simplicity:** Works over standard HTTP, doesn’t needs special protocols or complex handshakes and that means it works easily with the existing backend (like Nodejs, Python Flask, etc)  
@@ -255,7 +281,9 @@ sequenceDiagram
     end
 ```
 It will result in a sequence diagram that looks like this:
+
 <div style={{ maxWidth: '400px', margin: '0 auto' }}>
-![Mermaid js interaction sequence diagram](./blog-assets/md.png)
+![Mermaid js interaction sequence diagram](./blog-assets/mermaid.png)
 </div>
+
 This shows how you use Mermaid.js to create visuals using code/text.
