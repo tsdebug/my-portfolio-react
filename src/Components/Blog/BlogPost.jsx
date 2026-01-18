@@ -86,7 +86,7 @@ export default function BlogPost() {
         <Link to="/blog" className="text-blue-400 hover:underline">← Back to blog</Link>
       </p>
 
-      <h1 className="text-3xl md:text-4xl font-bold">{fm?.title ?? slug}</h1>
+    
       <p className="text-sm text-neutral-400 mt-2">
         {fm?.date ? fmt(fm.date) : null}
         {fm?.author ? ` • ${fm.author}` : ''}
