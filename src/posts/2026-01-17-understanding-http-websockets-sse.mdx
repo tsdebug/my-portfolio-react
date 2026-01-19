@@ -73,6 +73,7 @@ HTTP still forgets about you after a transaction is complete but it recognizes y
 
 That’s how we deal with our forgotful HTTP. You see, the amount of thoughts put behind a solution is truly appreciable.
 
+---
 
 ## The Polling Problem: (Why we needed an upgrade) 
 HTTP is amazing for static pages and all but as mentioned before it is like ‘the letter system’ thus **slow** (start / stop / start / stop). Can you imagine using this slow ‘letter system’ to build a Live Chat app?
@@ -102,6 +103,8 @@ If a problem is acknowledged, you know someone did come up with a solution to th
 
 
 For this reason **websockets** were invented.
+
+---
 
 ## WebSockets: (The "Phone Call”)
 
@@ -185,6 +188,8 @@ This is the most interesting part actually. You can see the convo going on in We
 ![Heartbeat](./blog-assets/heartbeat.png)
 </div>
 
+---
+
 ## SSE (Server Sent Events): (The "Radio Station”)
 
 ![SSE Image](./blog-assets/sse.png)
@@ -218,6 +223,8 @@ Fun fact? SSE is just HTTP with a twist, that is not too twisted to understand o
 - **Text only**: SSE is strictly for text. If you want to send a file to the server, you have to first encode it into text (Base64), which is inefficient. Here WebSockets have a plus point, it can handle binary data (like images or audio).
 - **Connection Limit**: This is a quirky browser issue. Most browsers (like Chrome) limit you to **6 open connections per domain**.
 
+---
+
 ## How to make a choice?
 
 Now on what basis can you choose which one is more suitable amongst HTTP, WebSockets and SSE?
@@ -236,6 +243,8 @@ Now on what basis can you choose which one is more suitable amongst HTTP, WebSoc
  - **Why** - It’s simple, lighter than WebSockets and easier to set up.
  - **Example** - Stock tickers, Live cricket/ football scores.
 
+
+---
 
 ## Bonus Addition - Mermaid.js
 
@@ -305,3 +314,14 @@ It will result in a sequence diagram that looks like this:
 </div>
 
 This shows how you use Mermaid.js to create visuals using code/text.
+
+
+---
+
+## Conclusion
+It very important to understand the options you have for better decision making as to which one should be used for which job. 
+
+As developers, our goal is to balance server load with user experience. Whether you are building a simple blog or a high-intensity trading platform, knowing how these protocols work ensures your "instantly delivered" world stays fast and efficient.
+
+Now go ahead, open your DevTools, and see these "letters" and "phone calls" happening in real-time!
+And don't forget to try out visual designing using code in Mermaid.js.
