@@ -51,4 +51,4 @@ I am treating this portfolio as a living product. Upcoming features include:
 4.  Open the local host link (usually `http://localhost:5173`) in your browser.
 
 ---
-*Engineered with React, styled with Tailwind, and built for performance.*
+*Engineered with React, styled with Tailwind, and built for performance...*
